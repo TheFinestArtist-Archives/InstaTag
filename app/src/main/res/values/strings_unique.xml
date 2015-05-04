@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <!-- Google Ad Mob -->
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-8256229529844462/4908248434</string>
+    <string name="interstitial_ad_unit_id" translatable="false">ca-app-pub-8256229529844462/6384981637</string>
+
+</resources>

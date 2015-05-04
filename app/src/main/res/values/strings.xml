@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">InstaTag</string>
+    <string name="action_settings">Settings</string>
+    <string name="instatag">InstaTag</string>
+    <string name="edit">Edit</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
+</resources>
