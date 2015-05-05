@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.aviary.android.feather.sdk.AviaryIntent;
 import com.aviary.android.feather.sdk.internal.headless.utils.MegaPixels;
+import com.orhanobut.logger.Logger;
 import com.thefinestartist.instatag.adapters.items.PhotoItem;
 import com.thefinestartist.instatag.helper.AdHelper;
 
@@ -24,21 +25,23 @@ public class PhotoEditActivity extends CameraActivity {
 
     static final int REQUEST_EDIT_PHOTO = 4321;
 
-    protected void editPhoto(PhotoItem photoItem) {
+    private String mEditingPhotoPath;
+    private File mEditingPhotoFile;
+    private boolean mAddedEditingPhoto;
 
+    protected void editPhoto(PhotoItem photoItem) {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
             try {
-                photoFile = createImageFile();
+                mEditingPhotoFile = createImageFile();
             } catch (IOException ex) {
                 Toast.makeText(this, "There was a problem creating the photo...", Toast.LENGTH_SHORT).show();
             }
-            if (photoFile != null) {
+            if (mEditingPhotoFile != null) {
                 Intent newIntent = new AviaryIntent.Builder(this)
                         .setData(Uri.parse(photoItem.getFilePath()))
-                        .withOutput(Uri.fromFile(photoFile))
+                        .withOutput(Uri.fromFile(mEditingPhotoFile))
                         .saveWithNoChanges(false)
                         .withOutputFormat(Bitmap.CompressFormat.JPEG)
                         .withOutputSize(MegaPixels.Mp30)
@@ -53,13 +56,11 @@ public class PhotoEditActivity extends CameraActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == REQUEST_EDIT_PHOTO) {
+        if (requestCode == REQUEST_EDIT_PHOTO && resultCode == RESULT_OK) {
             galleryAddPic();
             AdHelper.popUpAd(this);
         }
     }
-
-    private String mCurrentPhotoPath;
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -72,15 +73,28 @@ public class PhotoEditActivity extends CameraActivity {
                 storageDir      /* directory */
         );
 
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        mEditingPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
 
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
+        File f = new File(mEditingPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
+        mAddedEditingPhoto = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!mAddedEditingPhoto && mEditingPhotoFile != null) {
+            Logger.d("onResume, mEditingPhotoFile has been deleted? " + mEditingPhotoFile.delete());
+        }
+
+        mEditingPhotoPath = null;
+        mEditingPhotoFile = null;
+        mAddedEditingPhoto = false;
     }
 }

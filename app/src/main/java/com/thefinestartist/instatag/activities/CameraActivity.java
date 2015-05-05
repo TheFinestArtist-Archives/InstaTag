@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.thefinestartist.instatag.helper.AdHelper;
 
 import java.io.File;
@@ -22,6 +23,10 @@ public class CameraActivity extends StatusBarTintActivity {
 
     static final int REQUEST_TAKE_PHOTO = 1234;
 
+    private String mTakingPhotoPath;
+    private File mTakingPhotoFile;
+    private boolean mAddedTakingPhoto;
+
     protected void dispatchTakePictureIntent() {
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
@@ -31,14 +36,13 @@ public class CameraActivity extends StatusBarTintActivity {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
             try {
-                photoFile = createImageFile();
+                mTakingPhotoFile = createImageFile();
             } catch (IOException ex) {
                 Toast.makeText(this, "There was a problem creating the photo...", Toast.LENGTH_SHORT).show();
             }
-            if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            if (mTakingPhotoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mTakingPhotoFile));
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
         }
@@ -52,8 +56,6 @@ public class CameraActivity extends StatusBarTintActivity {
         }
     }
 
-    private String mCurrentPhotoPath;
-
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -65,15 +67,28 @@ public class CameraActivity extends StatusBarTintActivity {
                 storageDir      /* directory */
         );
 
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        mTakingPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
 
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
+        File f = new File(mTakingPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
+        mAddedTakingPhoto = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!mAddedTakingPhoto && mTakingPhotoFile != null) {
+            Logger.d("onResume, mTakingPhotoFile has been deleted? " + mTakingPhotoFile.delete());
+        }
+
+        mTakingPhotoPath = null;
+        mTakingPhotoFile = null;
+        mAddedTakingPhoto = false;
     }
 }
