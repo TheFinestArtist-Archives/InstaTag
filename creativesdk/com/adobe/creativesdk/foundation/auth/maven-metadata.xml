@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.adobe.creativesdk.foundation</groupId>
+  <artifactId>auth</artifactId>
+  <version>0.3.94</version>
+  <versioning>
+    <versions>
+      <version>0.3.94</version>
+    </versions>
+    <lastUpdated>20150211074734</lastUpdated>
+  </versioning>
+</metadata>

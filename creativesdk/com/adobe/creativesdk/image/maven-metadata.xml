@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.adobe.creativesdk</groupId>
+  <artifactId>image</artifactId>
+  <version>4.0.0</version>
+  <versioning>
+    <versions>
+      <version>4.0.0</version>
+    </versions>
+    <lastUpdated>20150211074732</lastUpdated>
+  </versioning>
+</metadata>

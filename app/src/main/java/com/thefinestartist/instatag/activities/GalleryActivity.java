@@ -2,7 +2,10 @@ package com.thefinestartist.instatag.activities;
 
 import android.app.LoaderManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,8 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.RelativeLayout;
 
+import com.aviary.android.feather.sdk.AviaryIntent;
+import com.aviary.android.feather.sdk.internal.headless.utils.MegaPixels;
 import com.cocosw.bottomsheet.BottomSheet;
 import com.google.android.gms.ads.AdView;
 import com.melnykov.fab.FloatingActionButton;
@@ -104,16 +108,12 @@ public class GalleryActivity extends CameraActivity implements SwipeRefreshLayou
         }
 
         adapter.notifyDataSetChanged();
-
-//        cancelProgressDialog();
     }
 
     @Override
     public void onLoaderReset(Loader<List<PhotoItem>> loader) {
         photoListItem.clear();
         adapter.notifyDataSetChanged();
-
-//        cancelProgressDialog();
     }
 
     @Override
@@ -128,12 +128,25 @@ public class GalleryActivity extends CameraActivity implements SwipeRefreshLayou
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
         new BottomSheet.Builder(this).title("title").sheet(R.menu.menu_photo).listener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case R.id.instatag:
+                        break;
+                    case R.id.edit:
+                        PhotoItem photoItem = (PhotoItem) parent.getItemAtPosition(position);
+                        Intent newIntent = new AviaryIntent.Builder(GalleryActivity.this)
+                                .setData(photoItem.getFullImageUri()) // input image src
+                                .withOutput(Uri.parse("file://" + photoItem.getFullImageUri().getPath())) // output file
+                                .withOutputFormat(Bitmap.CompressFormat.JPEG) // output format
+                                .withOutputSize(MegaPixels.Mp5) // output size
+                                .withOutputQuality(90) // output quality
+                                .build();
+
+                        // start the activity
+                        startActivityForResult(newIntent, 1);
                         break;
                 }
             }
