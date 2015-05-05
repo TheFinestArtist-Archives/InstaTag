@@ -91,7 +91,6 @@ public class GalleryActivity extends PhotoEditActivity implements SwipeRefreshLa
             @Override
             public void run() {
                 swipeLayout.setRefreshing(false);
-                AdHelper.popUpAd(GalleryActivity.this);
             }
         }, 3000);
     }

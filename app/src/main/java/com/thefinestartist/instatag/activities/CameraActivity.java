@@ -8,7 +8,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
-import com.thefinestartist.instatag.helper.MediaScanHelper;
+import com.thefinestartist.instatag.helper.AdHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class CameraActivity extends StatusBarTintActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                Toast.makeText(this, "There was a problem saving the photo...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "There was a problem creating the photo...", Toast.LENGTH_SHORT).show();
             }
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
@@ -48,11 +48,11 @@ public class CameraActivity extends StatusBarTintActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             galleryAddPic();
-            MediaScanHelper.scan(this, mCurrentPhotoPath, null);
+            AdHelper.popUpAd(this);
         }
     }
 
-    String mCurrentPhotoPath;
+    private String mCurrentPhotoPath;
 
     private File createImageFile() throws IOException {
         // Create an image file name
