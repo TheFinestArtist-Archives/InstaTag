@@ -76,9 +76,10 @@ public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
             holder = (ViewHolder) view.getTag();
         }
 
-        final PhotoItem photoItem = getItem(position);
+        PhotoItem photoItem = getItem(position);
         Picasso.with(context)
-                .load("file://" + photoItem.getThumbnailUri().getPath())
+                .load("file://" + photoItem.getThumbnailPath())
+                .rotate(photoItem.getOrientation())
                 .noFade()
                 .into(holder.photo, new Callback() {
                     @Override

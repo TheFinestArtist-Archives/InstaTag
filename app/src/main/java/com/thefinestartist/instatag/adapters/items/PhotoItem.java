@@ -22,7 +22,7 @@
 
 package com.thefinestartist.instatag.adapters.items;
 
-import android.net.Uri;
+import java.util.Date;
 
 /**
  * Used to represent a photo item.
@@ -31,30 +31,46 @@ import android.net.Uri;
  */
 public class PhotoItem {
 
-    private Uri thumbnailUri;
-    private Uri fullImageUri;
+    private int id;
+    private Date date;
+    private String bucket;
+    private String filePath;
+    private String thumbnailPath;
+    private int orientation;
 
-    public PhotoItem(Uri thumbnailUri, Uri fullImageUri) {
-        this.thumbnailUri = thumbnailUri;
-        this.fullImageUri = fullImageUri;
+    public PhotoItem(int id, Date date, String bucket, String filePath, String thumbnailPath, int orientation) {
+        this.id = id;
+        this.date = date;
+        this.bucket = bucket;
+        this.filePath = filePath;
+        this.thumbnailPath = thumbnailPath;
+        this.orientation = orientation;
     }
 
     /**
      * Getters and setters
      */
-    public Uri getThumbnailUri() {
-        return thumbnailUri;
+    public int getId() {
+        return id;
     }
 
-    public void setThumbnailUri(Uri thumbnailUri) {
-        this.thumbnailUri = thumbnailUri;
+    public Date getDate() {
+        return date;
     }
 
-    public Uri getFullImageUri() {
-        return fullImageUri;
+    public String getBucket() {
+        return bucket;
     }
 
-    public void setFullImageUri(Uri fullImageUri) {
-        this.fullImageUri = fullImageUri;
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
+    public int getOrientation() {
+        return orientation;
     }
 }

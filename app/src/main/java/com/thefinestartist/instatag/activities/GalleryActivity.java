@@ -1,11 +1,6 @@
 package com.thefinestartist.instatag.activities;
 
-import android.app.LoaderManager;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.Loader;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,8 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.aviary.android.feather.sdk.AviaryIntent;
-import com.aviary.android.feather.sdk.internal.headless.utils.MegaPixels;
 import com.cocosw.bottomsheet.BottomSheet;
 import com.google.android.gms.ads.AdView;
 import com.melnykov.fab.FloatingActionButton;
@@ -25,16 +18,16 @@ import com.thefinestartist.instatag.R;
 import com.thefinestartist.instatag.adapters.PhotoAdapter;
 import com.thefinestartist.instatag.adapters.items.PhotoItem;
 import com.thefinestartist.instatag.helper.AdHelper;
-import com.thefinestartist.instatag.utilities.PhotoGalleryAsyncLoader;
+import com.thefinestartist.instatag.helper.PhotoGalleyHelper;
+import com.thefinestartist.instatag.helper.ShareHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class GalleryActivity extends CameraActivity implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<List<PhotoItem>> {
+public class GalleryActivity extends PhotoEditActivity implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
@@ -48,7 +41,7 @@ public class GalleryActivity extends CameraActivity implements SwipeRefreshLayou
     FloatingActionButton fab;
 
     private PhotoAdapter adapter;
-    private ArrayList<PhotoItem> photoListItem;
+    private ArrayList<PhotoItem> photoItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +55,7 @@ public class GalleryActivity extends CameraActivity implements SwipeRefreshLayou
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(R.color.primary, R.color.primary_dark);
 
-        photoListItem = new ArrayList<>();
-        adapter = new PhotoAdapter(this, R.layout.photo_item, photoListItem);
+        adapter = new PhotoAdapter(this, R.layout.photo_item, photoItems);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
 
@@ -73,9 +65,9 @@ public class GalleryActivity extends CameraActivity implements SwipeRefreshLayou
                 dispatchTakePictureIntent();
             }
         });
-//        fab.attachToListView(listView);
 
-        getLoaderManager().initLoader(0, null, this);
+        PhotoGalleyHelper.getPhotoItems(this, photoItems);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -94,29 +86,6 @@ public class GalleryActivity extends CameraActivity implements SwipeRefreshLayou
     }
 
     @Override
-    public Loader<List<PhotoItem>> onCreateLoader(int id, Bundle args) {
-        return new PhotoGalleryAsyncLoader(this);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<PhotoItem>> loader, List<PhotoItem> data) {
-        photoListItem.clear();
-
-        for (int i = 0; i < data.size(); i++) {
-            PhotoItem item = data.get(i);
-            photoListItem.add(item);
-        }
-
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<PhotoItem>> loader) {
-        photoListItem.clear();
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void onRefresh() {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -129,24 +98,18 @@ public class GalleryActivity extends CameraActivity implements SwipeRefreshLayou
 
     @Override
     public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
-        new BottomSheet.Builder(this).title("title").sheet(R.menu.menu_photo).listener(new DialogInterface.OnClickListener() {
+        new BottomSheet.Builder(this).sheet(R.menu.menu_photo).listener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                PhotoItem photoItem = (PhotoItem) parent.getItemAtPosition(position);
                 switch (which) {
                     case R.id.instatag:
                         break;
                     case R.id.edit:
-                        PhotoItem photoItem = (PhotoItem) parent.getItemAtPosition(position);
-                        Intent newIntent = new AviaryIntent.Builder(GalleryActivity.this)
-                                .setData(photoItem.getFullImageUri()) // input image src
-                                .withOutput(Uri.parse("file://" + photoItem.getFullImageUri().getPath())) // output file
-                                .withOutputFormat(Bitmap.CompressFormat.JPEG) // output format
-                                .withOutputSize(MegaPixels.Mp5) // output size
-                                .withOutputQuality(90) // output quality
-                                .build();
-
-                        // start the activity
-                        startActivityForResult(newIntent, 1);
+                        editPhoto(photoItem);
+                        break;
+                    case R.id.share:
+                        ShareHelper.share(GalleryActivity.this, photoItem);
                         break;
                 }
             }
