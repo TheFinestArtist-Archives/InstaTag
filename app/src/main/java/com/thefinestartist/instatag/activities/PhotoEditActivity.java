@@ -23,7 +23,7 @@ import java.util.Date;
  */
 public class PhotoEditActivity extends CameraActivity {
 
-    static final int REQUEST_EDIT_PHOTO = 4321;
+    private static final int REQUEST_EDIT_PHOTO = 4321;
 
     private String mEditingPhotoPath;
     private File mEditingPhotoFile;
@@ -56,6 +56,8 @@ public class PhotoEditActivity extends CameraActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQUEST_EDIT_PHOTO && resultCode == RESULT_OK) {
             galleryAddPic();
             AdHelper.popUpAd(this);
@@ -89,6 +91,7 @@ public class PhotoEditActivity extends CameraActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         if (!mAddedEditingPhoto && mEditingPhotoFile != null) {
             Logger.d("onResume, mEditingPhotoFile has been deleted? " + mEditingPhotoFile.delete());
         }

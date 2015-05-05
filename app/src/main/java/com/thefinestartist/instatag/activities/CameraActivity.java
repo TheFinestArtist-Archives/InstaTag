@@ -1,6 +1,5 @@
 package com.thefinestartist.instatag.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -21,7 +20,7 @@ import java.util.Date;
  */
 public class CameraActivity extends StatusBarTintActivity {
 
-    static final int REQUEST_TAKE_PHOTO = 1234;
+    private static final int REQUEST_TAKE_PHOTO = 1234;
 
     private String mTakingPhotoPath;
     private File mTakingPhotoFile;
@@ -50,7 +49,9 @@ public class CameraActivity extends StatusBarTintActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             galleryAddPic();
             AdHelper.popUpAd(this);
         }
@@ -83,6 +84,7 @@ public class CameraActivity extends StatusBarTintActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         if (!mAddedTakingPhoto && mTakingPhotoFile != null) {
             Logger.d("onResume, mTakingPhotoFile has been deleted? " + mTakingPhotoFile.delete());
         }
