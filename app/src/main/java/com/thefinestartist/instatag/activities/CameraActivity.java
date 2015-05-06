@@ -3,8 +3,11 @@ package com.thefinestartist.instatag.activities;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
@@ -55,7 +58,7 @@ public class CameraActivity extends StatusBarTintActivity {
                 galleryAddPic();
                 AdHelper.popUpAd(this);
             } else {
-                if (mTakingPhotoFile != null)
+                if (mTakingPhotoFile != null && mTakingPhotoFile.exists())
                     Logger.d("onActivityResult, mTakingPhotoFile has been deleted? " + mTakingPhotoFile.delete());
                 mTakingPhotoPath = null;
                 mTakingPhotoFile = null;
@@ -75,6 +78,7 @@ public class CameraActivity extends StatusBarTintActivity {
         );
 
         mTakingPhotoPath = "file:" + image.getAbsolutePath();
+        Logger.d("createImageFile : " + mTakingPhotoPath);
         return image;
     }
 
@@ -84,5 +88,20 @@ public class CameraActivity extends StatusBarTintActivity {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
+    }
+
+    private final static String TAKING_PHOTO_PATH = "TAKING_PHOTO_PATH";
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(TAKING_PHOTO_PATH, mTakingPhotoPath);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mTakingPhotoPath = savedInstanceState.getString(TAKING_PHOTO_PATH);
+        mTakingPhotoFile = new File(mTakingPhotoPath);
     }
 }

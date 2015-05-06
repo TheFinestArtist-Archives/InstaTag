@@ -3,6 +3,7 @@ package com.thefinestartist.instatag.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Toast;
@@ -59,14 +60,16 @@ public class PhotoEditActivity extends CameraActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_EDIT_PHOTO && resultCode == RESULT_OK) {
-            galleryAddPic();
-            AdHelper.popUpAd(this);
-        } else {
-            if (mEditingPhotoFile != null)
-                Logger.d("onResume, mEditingPhotoFile has been deleted? " + mEditingPhotoFile.delete());
-            mEditingPhotoPath = null;
-            mEditingPhotoFile = null;
+        if (requestCode == REQUEST_EDIT_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                galleryAddPic();
+                AdHelper.popUpAd(this);
+            } else {
+                if (mEditingPhotoFile != null && mEditingPhotoFile.exists())
+                    Logger.d("onActivityResult, mEditingPhotoFile has been deleted? " + mEditingPhotoFile.delete());
+                mEditingPhotoPath = null;
+                mEditingPhotoFile = null;
+            }
         }
     }
 
@@ -91,5 +94,20 @@ public class PhotoEditActivity extends CameraActivity {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
+    }
+
+    private final static String EDITING_PHOTO_PATH = "EDITING_PHOTO_PATH";
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EDITING_PHOTO_PATH, mEditingPhotoPath);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mEditingPhotoPath = savedInstanceState.getString(EDITING_PHOTO_PATH);
+        mEditingPhotoFile = new File(mEditingPhotoPath);
     }
 }
