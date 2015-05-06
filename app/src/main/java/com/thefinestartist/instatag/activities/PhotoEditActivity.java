@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.aviary.android.feather.sdk.AviaryIntent;
 import com.aviary.android.feather.sdk.internal.headless.utils.MegaPixels;
 import com.orhanobut.logger.Logger;
+import com.thefinestartist.instatag.R;
 import com.thefinestartist.instatag.adapters.items.PhotoItem;
 import com.thefinestartist.instatag.helper.AdHelper;
 
@@ -27,7 +28,6 @@ public class PhotoEditActivity extends CameraActivity {
 
     private String mEditingPhotoPath;
     private File mEditingPhotoFile;
-    private boolean mAddedEditingPhoto;
 
     protected void editPhoto(PhotoItem photoItem) {
 
@@ -50,6 +50,7 @@ public class PhotoEditActivity extends CameraActivity {
                         .build();
 
                 startActivityForResult(newIntent, REQUEST_EDIT_PHOTO);
+                overridePendingTransition(R.anim.modal_activity_open_enter, R.anim.modal_activity_open_exit);
             }
         }
     }
@@ -61,6 +62,11 @@ public class PhotoEditActivity extends CameraActivity {
         if (requestCode == REQUEST_EDIT_PHOTO && resultCode == RESULT_OK) {
             galleryAddPic();
             AdHelper.popUpAd(this);
+        } else {
+            if (mEditingPhotoFile != null)
+                Logger.d("onResume, mEditingPhotoFile has been deleted? " + mEditingPhotoFile.delete());
+            mEditingPhotoPath = null;
+            mEditingPhotoFile = null;
         }
     }
 
@@ -85,19 +91,5 @@ public class PhotoEditActivity extends CameraActivity {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
-        mAddedEditingPhoto = true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (!mAddedEditingPhoto && mEditingPhotoFile != null) {
-            Logger.d("onResume, mEditingPhotoFile has been deleted? " + mEditingPhotoFile.delete());
-        }
-
-        mEditingPhotoPath = null;
-        mEditingPhotoFile = null;
-        mAddedEditingPhoto = false;
     }
 }

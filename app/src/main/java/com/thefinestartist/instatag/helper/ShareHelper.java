@@ -10,6 +10,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 
 import com.cocosw.bottomsheet.BottomSheet;
+import com.thefinestartist.instatag.R;
 import com.thefinestartist.instatag.adapters.items.PhotoItem;
 
 import java.io.File;
@@ -49,6 +50,7 @@ public class ShareHelper {
                 newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 newIntent.setComponent(name);
                 activity.startActivity(newIntent);
+                activity.overridePendingTransition(R.anim.modal_activity_open_enter, R.anim.modal_activity_open_exit);
             }
         });
         return builder;

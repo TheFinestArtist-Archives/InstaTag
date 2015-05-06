@@ -24,7 +24,6 @@ public class CameraActivity extends StatusBarTintActivity {
 
     private String mTakingPhotoPath;
     private File mTakingPhotoFile;
-    private boolean mAddedTakingPhoto;
 
     protected void dispatchTakePictureIntent() {
 
@@ -51,9 +50,16 @@ public class CameraActivity extends StatusBarTintActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            galleryAddPic();
-            AdHelper.popUpAd(this);
+        if (requestCode == REQUEST_TAKE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                galleryAddPic();
+                AdHelper.popUpAd(this);
+            } else {
+                if (mTakingPhotoFile != null)
+                    Logger.d("onActivityResult, mTakingPhotoFile has been deleted? " + mTakingPhotoFile.delete());
+                mTakingPhotoPath = null;
+                mTakingPhotoFile = null;
+            }
         }
     }
 
@@ -78,19 +84,5 @@ public class CameraActivity extends StatusBarTintActivity {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
-        mAddedTakingPhoto = true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (!mAddedTakingPhoto && mTakingPhotoFile != null) {
-            Logger.d("onResume, mTakingPhotoFile has been deleted? " + mTakingPhotoFile.delete());
-        }
-
-        mTakingPhotoPath = null;
-        mTakingPhotoFile = null;
-        mAddedTakingPhoto = false;
     }
 }
