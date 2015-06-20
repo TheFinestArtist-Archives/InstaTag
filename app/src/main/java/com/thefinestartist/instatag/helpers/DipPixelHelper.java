@@ -1,4 +1,4 @@
-package com.thefinestartist.instatag.helper;
+package com.thefinestartist.instatag.helpers;
 
 import android.content.Context;
 import android.content.res.Resources;

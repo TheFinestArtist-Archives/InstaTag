@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.thefinestartist.instatag.helper;
+package com.thefinestartist.instatag.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

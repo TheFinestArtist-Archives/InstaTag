@@ -13,9 +13,11 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
-
         maven {
             url "${project.rootDir}/creativesdk"
+        }
+        maven {
+            url "https://jitpack.io"
         }
     }
 }

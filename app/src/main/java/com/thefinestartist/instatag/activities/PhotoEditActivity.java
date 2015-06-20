@@ -13,7 +13,7 @@ import com.aviary.android.feather.sdk.internal.headless.utils.MegaPixels;
 import com.orhanobut.logger.Logger;
 import com.thefinestartist.instatag.R;
 import com.thefinestartist.instatag.adapters.items.PhotoItem;
-import com.thefinestartist.instatag.helper.AdHelper;
+import com.thefinestartist.instatag.helpers.AdHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.util.Date;
  */
 public class PhotoEditActivity extends CameraActivity {
 
-    private static final int REQUEST_EDIT_PHOTO = 4321;
+    protected static final int REQUEST_EDIT_PHOTO = 4321;
 
     private String mEditingPhotoPath;
     private File mEditingPhotoFile;

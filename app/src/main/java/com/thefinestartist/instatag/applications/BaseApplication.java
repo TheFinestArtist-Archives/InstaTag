@@ -1,4 +1,4 @@
-package com.thefinestartist.instatag.application;
+package com.thefinestartist.instatag.applications;
 
 
 import android.content.Context;

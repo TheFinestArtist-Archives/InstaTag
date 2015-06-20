@@ -5,13 +5,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
-import com.thefinestartist.instatag.helper.AdHelper;
+import com.thefinestartist.instatag.helpers.AdHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +21,7 @@ import java.util.Date;
  */
 public class CameraActivity extends StatusBarTintActivity {
 
-    private static final int REQUEST_TAKE_PHOTO = 1234;
+    protected static final int REQUEST_TAKE_PHOTO = 1234;
 
     private String mTakingPhotoPath;
     private File mTakingPhotoFile;
@@ -31,7 +29,7 @@ public class CameraActivity extends StatusBarTintActivity {
     protected void dispatchTakePictureIntent() {
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            Toast.makeText(this, "This device does not have a camera.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "This device does not have a camera...", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -78,7 +76,6 @@ public class CameraActivity extends StatusBarTintActivity {
         );
 
         mTakingPhotoPath = "file:" + image.getAbsolutePath();
-        Logger.d("createImageFile : " + mTakingPhotoPath);
         return image;
     }
 

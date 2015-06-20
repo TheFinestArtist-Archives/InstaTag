@@ -38,7 +38,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.thefinestartist.instatag.R;
 import com.thefinestartist.instatag.adapters.items.PhotoItem;
-import com.thefinestartist.instatag.helper.ScreenHelper;
+import com.thefinestartist.instatag.helpers.ScreenHelper;
 
 import java.util.List;
 

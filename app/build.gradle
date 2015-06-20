@@ -55,4 +55,6 @@ dependencies {
     compile 'com.orhanobut:logger:1.8'
     compile 'com.adobe.creativesdk.foundation:auth:0.3.94'
     compile 'com.adobe.creativesdk:image:4.0.0'
+    compile 'com.afollestad:material-dialogs:0.7.3.+'
+    compile 'com.github.QuadFlask:colorpicker:0.0.8'
 }

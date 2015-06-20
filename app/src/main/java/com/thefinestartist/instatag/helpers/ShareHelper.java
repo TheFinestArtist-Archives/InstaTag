@@ -1,4 +1,4 @@
-package com.thefinestartist.instatag.helper;
+package com.thefinestartist.instatag.helpers;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -34,6 +34,7 @@ public class ShareHelper {
         File imageFileToShare = new File(photoItem.getFilePath());
         Uri uri = Uri.fromFile(imageFileToShare);
         shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "#InstaStckr");
         shareIntent.setType("image/*");
         final List<ResolveInfo> list = pm.queryIntentActivities(shareIntent, 0);
 

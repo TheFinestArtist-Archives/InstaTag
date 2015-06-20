@@ -48,7 +48,7 @@ public class PhotoItem {
     }
 
     /**
-     * Getters and setters
+     * Getters
      */
     public int getId() {
         return id;

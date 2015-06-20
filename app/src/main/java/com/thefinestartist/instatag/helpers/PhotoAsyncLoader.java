@@ -1,5 +1,6 @@
-package com.thefinestartist.instatag.helper;
+package com.thefinestartist.instatag.helpers;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,13 +12,23 @@ import com.thefinestartist.instatag.adapters.items.PhotoItem;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
- * Created by TheFinestArtist on 5/5/15.
+ * Created by TheFinestArtist on 5/6/15.
  */
-public class PhotoGalleyHelper {
+public class PhotoAsyncLoader extends AsyncTaskLoader<List<PhotoItem>> {
 
-    public static void getPhotoItems(Context context, ArrayList<PhotoItem> photoItems) {
+    public PhotoAsyncLoader(Context context) {
+        super(context);
+    }
+
+    @Override
+    public List<PhotoItem> loadInBackground() {
+        return getPhotoItems(getContext());
+    }
+
+    private static List<PhotoItem> getPhotoItems(Context context) {
 
         SparseArray<String> thumbnails = getThumbnails(context);
 
@@ -38,7 +49,7 @@ public class PhotoGalleyHelper {
                 MediaStore.Images.Media.DATE_TAKEN + " DESC"        // Ordering
         );
 
-        photoItems.clear();
+        List<PhotoItem> photoItems = new ArrayList<>();
         if (cur.moveToFirst()) {
             int idColumn = cur.getColumnIndex(MediaStore.Images.Media._ID);
             int dateColumn = cur.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
@@ -67,6 +78,7 @@ public class PhotoGalleyHelper {
         }
 
         cur.close();
+        return photoItems;
     }
 
     private static SparseArray<String> getThumbnails(Context context) {

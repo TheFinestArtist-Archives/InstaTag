@@ -1,8 +1,10 @@
 package com.thefinestartist.instatag.activities;
 
+import android.app.LoaderManager;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -17,17 +19,22 @@ import com.melnykov.fab.FloatingActionButton;
 import com.thefinestartist.instatag.R;
 import com.thefinestartist.instatag.adapters.PhotoAdapter;
 import com.thefinestartist.instatag.adapters.items.PhotoItem;
-import com.thefinestartist.instatag.helper.AdHelper;
-import com.thefinestartist.instatag.helper.PhotoGalleyHelper;
-import com.thefinestartist.instatag.helper.ShareHelper;
+import com.thefinestartist.instatag.helpers.AdHelper;
+import com.thefinestartist.instatag.helpers.PhotoAsyncLoader;
+import com.thefinestartist.instatag.helpers.PhotoItemHelper;
+import com.thefinestartist.instatag.helpers.ShareHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-
-public class GalleryActivity extends PhotoEditActivity implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
+public class GalleryActivity extends InstaTagActivity
+        implements
+        SwipeRefreshLayout.OnRefreshListener,
+        AdapterView.OnItemClickListener,
+        LoaderManager.LoaderCallbacks<List<PhotoItem>> {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
@@ -42,6 +49,7 @@ public class GalleryActivity extends PhotoEditActivity implements SwipeRefreshLa
 
     private PhotoAdapter adapter;
     private ArrayList<PhotoItem> photoItems = new ArrayList<>();
+    private Loader loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,35 +74,51 @@ public class GalleryActivity extends PhotoEditActivity implements SwipeRefreshLa
             }
         });
 
-        PhotoGalleyHelper.getPhotoItems(this, photoItems);
-        adapter.notifyDataSetChanged();
+        loader = getLoaderManager().initLoader(0, null, this);
+        refresh();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ((requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK)
+                || (requestCode == REQUEST_EDIT_PHOTO && resultCode == RESULT_OK)) {
+            refresh();
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                swipeLayout.setRefreshing(false);
-            }
-        }, 3000);
+        refresh();
     }
 
+    private void refresh() {
+        swipeLayout.setRefreshing(true);
+        loader.forceLoad();
+    }
+
+    @Override
+    public Loader<List<PhotoItem>> onCreateLoader(int id, Bundle args) {
+        return new PhotoAsyncLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<PhotoItem>> loader, List<PhotoItem> data) {
+        photoItems.clear();
+        for (PhotoItem item : data)
+            photoItems.add(item);
+        adapter.notifyDataSetChanged();
+        swipeLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<PhotoItem>> loader) {
+        // do nothing
+    }
+
+    /**
+     * OnPhotoClicked
+     */
     @Override
     public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
         new BottomSheet.Builder(this).sheet(R.menu.menu_photo).listener(new DialogInterface.OnClickListener() {
@@ -110,8 +134,30 @@ public class GalleryActivity extends PhotoEditActivity implements SwipeRefreshLa
                     case R.id.share:
                         ShareHelper.share(GalleryActivity.this, photoItem);
                         break;
+                    case R.id.delete:
+                        PhotoItemHelper.delete(photoItem);
+                        refresh();
+                        break;
                 }
             }
         }).show();
+    }
+
+    /**
+     * Menu Settings
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
