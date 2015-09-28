@@ -27,8 +27,8 @@ import com.thefinestartist.instatag.helpers.ShareHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class GalleryActivity extends InstaTagActivity
         implements
@@ -36,15 +36,15 @@ public class GalleryActivity extends InstaTagActivity
         AdapterView.OnItemClickListener,
         LoaderManager.LoaderCallbacks<List<PhotoItem>> {
 
-    @InjectView(R.id.toolbar)
+    @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @InjectView(R.id.adView)
+    @Bind(R.id.adView)
     AdView adView;
-    @InjectView(R.id.swipeLayout)
+    @Bind(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
-    @InjectView(android.R.id.list)
+    @Bind(android.R.id.list)
     GridView listView;
-    @InjectView(R.id.fab)
+    @Bind(R.id.fab)
     FloatingActionButton fab;
 
     private PhotoAdapter adapter;
@@ -55,7 +55,7 @@ public class GalleryActivity extends InstaTagActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         AdHelper.loadBannerAd(adView);
