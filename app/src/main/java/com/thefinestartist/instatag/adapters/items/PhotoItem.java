@@ -35,15 +35,13 @@ public class PhotoItem {
     private Date date;
     private String bucket;
     private String filePath;
-    private String thumbnailPath;
     private int orientation;
 
-    public PhotoItem(int id, Date date, String bucket, String filePath, String thumbnailPath, int orientation) {
+    public PhotoItem(int id, Date date, String bucket, String filePath, int orientation) {
         this.id = id;
         this.date = date;
         this.bucket = bucket;
         this.filePath = filePath;
-        this.thumbnailPath = thumbnailPath;
         this.orientation = orientation;
     }
 
@@ -64,10 +62,6 @@ public class PhotoItem {
 
     public String getFilePath() {
         return filePath;
-    }
-
-    public String getThumbnailPath() {
-        return thumbnailPath;
     }
 
     public int getOrientation() {

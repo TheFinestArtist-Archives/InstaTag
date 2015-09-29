@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.SparseArray;
 
-import com.orhanobut.logger.Logger;
 import com.thefinestartist.instatag.adapters.items.PhotoItem;
 
 import java.util.ArrayList;
@@ -30,14 +29,12 @@ public class PhotoAsyncLoader extends AsyncTaskLoader<List<PhotoItem>> {
 
     private static List<PhotoItem> getPhotoItems(Context context) {
 
-        SparseArray<String> thumbnails = getThumbnails(context);
-
         String[] projection = new String[]{
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATE_TAKEN,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.ORIENTATION
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.ORIENTATION
         };
 
         Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -62,18 +59,15 @@ public class PhotoAsyncLoader extends AsyncTaskLoader<List<PhotoItem>> {
                 long date = cur.getLong(dateColumn);
                 String bucket = cur.getString(bucketColumn);
                 String filePath = cur.getString(dataColumn);
-                String thumbnailPath = thumbnails.get(id);
                 int orientation = cur.getInt(orientationColumn);
 
                 PhotoItem newItem = new PhotoItem(id,
                         new Date(date),
                         bucket,
                         filePath,
-                        thumbnailPath,
                         orientation);
                 photoItems.add(newItem);
 
-                Logger.i("id : " + id + " date : " + date + " bucket : " + bucket + " fullfile : " + filePath + " thumbnail :" + thumbnailPath + " orientation : " + orientation);
             } while (cur.moveToNext());
         }
 

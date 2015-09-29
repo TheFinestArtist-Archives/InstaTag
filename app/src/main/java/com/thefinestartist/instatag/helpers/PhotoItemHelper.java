@@ -16,12 +16,5 @@ public class PhotoItemHelper {
                 file.delete();
         } catch (Exception e) {
         }
-
-        try {
-            File thumbnail = new File(item.getThumbnailPath());
-            if (thumbnail.exists())
-                thumbnail.delete();
-        } catch (Exception e) {
-        }
     }
 }

@@ -24,29 +24,26 @@ package com.thefinestartist.instatag.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.SparseBooleanArray;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.thefinestartist.instatag.R;
 import com.thefinestartist.instatag.adapters.items.PhotoItem;
 import com.thefinestartist.instatag.helpers.ScreenHelper;
 
+import java.io.File;
 import java.util.List;
 
 public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
 
     private Context context;
     private int resourceId;
-    private SparseBooleanArray animationChecker = new SparseBooleanArray();
 
     public PhotoAdapter(Context context, int resourceId, List<PhotoItem> items) {
         super(context, resourceId, items);
@@ -77,38 +74,15 @@ public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
         }
 
         PhotoItem photoItem = getItem(position);
-        Picasso.with(context)
-                .load("file://" + photoItem.getThumbnailPath())
-                .rotate(photoItem.getOrientation())
-                .noFade()
-                .into(holder.photo, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        if (!animationChecker.get(position)) {
-                            Animation fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);
-                            fadeIn.setAnimationListener(new Animation.AnimationListener() {
-                                @Override
-                                public void onAnimationStart(Animation animation) {
-                                    animationChecker.append(position, true);
-                                }
 
-                                @Override
-                                public void onAnimationEnd(Animation animation) {
-                                    animationChecker.append(position, false);
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animation animation) {
-                                }
-                            });
-                            holder.photo.startAnimation(fadeIn);
-                        }
-                    }
-
-                    @Override
-                    public void onError() {
-                    }
-                });
+        File imageFile = new File(photoItem.getFilePath());
+        if (imageFile.exists()) {
+            Glide.with(context)
+                    .load(Uri.fromFile(imageFile))
+                    .centerCrop()
+                    .crossFade()
+                    .into(holder.photo);
+        }
 
         return view;
     }
