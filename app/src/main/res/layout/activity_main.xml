@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:visibility="gone"
         app:adSize="SMART_BANNER"
         app:adUnitId="@string/banner_ad_unit_id" />
 
@@ -31,8 +32,8 @@
             android:layout_height="match_parent">
 
             <GridView
-                style="@style/GridView.PhotoGallery"
                 android:id="@android:id/list"
+                style="@style/GridView.PhotoGallery"
                 android:numColumns="3" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
@@ -43,6 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
+            android:src="@drawable/ic_image_photo_camera"
             app:fab_colorNormal="@color/primary"
             app:fab_colorPressed="@color/primary"
             app:fab_colorRipple="@color/primary" />
