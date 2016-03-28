@@ -27,6 +27,8 @@ import android.view.WindowManager;
 
 public class ScreenHelper {
 
+    private ScreenHelper() {}
+
     @SuppressWarnings("deprecation")
     @SuppressLint("NewApi")
     public static int getWidth(Context context) {

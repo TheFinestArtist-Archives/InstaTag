@@ -9,6 +9,8 @@ import java.io.File;
  */
 public class PhotoItemHelper {
 
+    private PhotoItemHelper() {}
+
     public static void delete(PhotoItem item) {
         try {
             File file = new File(item.getFilePath());

@@ -21,6 +21,8 @@ import java.util.List;
  */
 public class ShareHelper {
 
+    private ShareHelper() {}
+
     public static void share(Activity activity, PhotoItem item) {
         getShareActions(activity, item).title("Share Photo").grid().build().show();
     }
