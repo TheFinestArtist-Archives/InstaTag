@@ -23,6 +23,8 @@ public class CameraActivity extends StatusBarTintActivity {
 
     protected static final int REQUEST_TAKE_PHOTO = 1234;
 
+    private final static String TAKING_PHOTO_PATH = "TAKING_PHOTO_PATH";
+
     private String mTakingPhotoPath;
     private File mTakingPhotoFile;
 
@@ -86,8 +88,6 @@ public class CameraActivity extends StatusBarTintActivity {
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
-
-    private final static String TAKING_PHOTO_PATH = "TAKING_PHOTO_PATH";
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

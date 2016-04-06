@@ -45,6 +45,8 @@ public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
     private Context context;
     private int resourceId;
 
+    private int itemWidth, itemHeight;
+
     public PhotoAdapter(Context context, int resourceId, List<PhotoItem> items) {
         super(context, resourceId, items);
         this.context = context;
@@ -86,8 +88,6 @@ public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
 
         return view;
     }
-
-    private int itemWidth, itemHeight;
 
     private int getItemWidth() {
         if (itemWidth == 0) {

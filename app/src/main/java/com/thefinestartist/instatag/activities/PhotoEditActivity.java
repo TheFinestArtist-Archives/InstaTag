@@ -27,6 +27,8 @@ public class PhotoEditActivity extends CameraActivity {
 
     protected static final int REQUEST_EDIT_PHOTO = 4321;
 
+    private final static String EDITING_PHOTO_PATH = "EDITING_PHOTO_PATH";
+
     private String mEditingPhotoPath;
     private File mEditingPhotoFile;
 
@@ -95,8 +97,6 @@ public class PhotoEditActivity extends CameraActivity {
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
-
-    private final static String EDITING_PHOTO_PATH = "EDITING_PHOTO_PATH";
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
