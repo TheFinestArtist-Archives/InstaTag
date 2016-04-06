@@ -13,6 +13,8 @@ import com.thefinestartist.instatag.R;
  */
 public class AdHelper {
 
+    private AdHelper() {}
+
     public static void loadBannerAd(AdView adView) {
         try {
             adView.loadAd(new AdRequest.Builder()

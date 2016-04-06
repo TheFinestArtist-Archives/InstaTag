@@ -9,6 +9,8 @@ import android.net.Uri;
  */
 public class MediaScanHelper {
 
+    private MediaScanHelper() {}
+
     public static void scan(Context context, String path, MediaScannerConnection.OnScanCompletedListener listener) {
         MediaScannerConnection.scanFile(context, new String[]{path}, null, listener);
     }
